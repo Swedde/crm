@@ -1,0 +1,1 @@
+mvn assembly:single && java -jar crm.jar
