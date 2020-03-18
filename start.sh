@@ -1,1 +1,1 @@
-mvn assembly:single && java -jar crm.jar
+mvn test && mvn assembly:single && java -jar crm.jar
