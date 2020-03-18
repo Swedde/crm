@@ -1,7 +1,11 @@
 package crm.servlets;
 
+import com.google.gson.JsonObject;
 import crm.dbservice.exception.DBException;
 import crm.dbservice.bean.DBService;
+import crm.utility.JSON_ANSW;
+import crm.utility.JSON_ERR;
+import crm.utility.PARAMETRS_NAMES;
 import crm.utility.Params;
 
 import javax.servlet.http.HttpServlet;
@@ -18,33 +22,42 @@ public class PurchaseServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonObject answer = new JsonObject();
         PrintWriter pw = response.getWriter();
-        String param = request.getParameter("params");
+        String param = request.getParameter(PARAMETRS_NAMES.PARAMETRS.getTitle());
         if (param.isEmpty()) {
-            pw.println("Empty query");
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.EMPTY_PARAMETRS.getTitle());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         Params params;
-
         try {
             params = Params.getParams(param);
         } catch (Exception e) {
-            pw.println(e.getMessage());
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), e.getMessage());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         try {
             if (!dbService.isExistProduct(params.name)) {
-                pw.println("Product not exist");
+                answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.NOT_EXIST_PRODUCT.getTitle());
+                pw.println(answer.toString());
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
             dbService.purchaseProduct(params);
         } catch (DBException e) {
-            pw.println("Data base fail");
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.DB_EXCEP.getTitle());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        pw.println("OK");
+        answer.addProperty(JSON_ANSW.STATUS.getTitle(), JSON_ANSW.OK.getTitle());
+        pw.println(answer.toString());
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

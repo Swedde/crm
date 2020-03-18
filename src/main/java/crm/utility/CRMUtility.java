@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CRMUtility {
+
     public static long getSalesReportDif(DBService dbService, String name, Date date) throws DBException {
         List<TradeHistoryDataSet> purchase = dbService.getActivePurchaseReport(name, date);
         List<TradeHistoryDataSet> demand = dbService.getActiveDemandReport(name, date);

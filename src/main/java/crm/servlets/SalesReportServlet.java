@@ -1,10 +1,9 @@
 package crm.servlets;
 
+import com.google.gson.JsonObject;
 import crm.dbservice.exception.DBException;
 import crm.dbservice.bean.DBService;
-import crm.utility.CRMUtility;
-import crm.utility.JSON_FIELDS;
-import crm.utility.Params;
+import crm.utility.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,46 +20,62 @@ public class SalesReportServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonObject answer = new JsonObject();
         PrintWriter pw = response.getWriter();
-        String param = request.getParameter("params");
+        String param = request.getParameter(PARAMETRS_NAMES.PARAMETRS.getTitle());
         if (param.isEmpty()) {
-            pw.println("Empty query");
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.EMPTY_PARAMETRS.getTitle());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         String name;
         String dateStr;
-        Date date;
 
         try {
             name = Params.getJsonParam(param, JSON_FIELDS.NAME.getTitle());
             dateStr = Params.getJsonParam(param,JSON_FIELDS.DATE.getTitle());
         } catch (Exception e) {
-            pw.println(e.getMessage());
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), e.getMessage());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         if (name.isEmpty()) {
-            pw.println("Empty product name");
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.EMPTY_PRODUCT.getTitle());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
+        Date date;
         try {
             date = Params.getDateFromString(dateStr);
         } catch (Exception e) {
-            pw.println(e.getMessage());
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), e.getMessage());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         try {
             if (!dbService.isExistProduct(name)) {
-                pw.println("Product not exist");
+                answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.NOT_EXIST_PRODUCT.getTitle());
+                pw.println(answer.toString());
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
             long report = CRMUtility.getSalesReportDif(dbService, name, date);
-            pw.println("Income: " + report);
+            answer.addProperty(JSON_ANSW.SALES_REPORT.getTitle(), report);
+            pw.println(answer.toString());
         } catch (DBException e) {
-            pw.println("Data base fail");
+            answer.addProperty(JSON_ERR.ERROR.getTitle(), JSON_ERR.DB_EXCEP.getTitle());
+            pw.println(answer.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
