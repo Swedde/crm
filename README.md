@@ -6,6 +6,6 @@
 
 Для запуска
 ```
-git clone https://github.com/Swedde/crm.git && cd crm && sh start.sh
+git clone https://github.com/Swedde/crm.git && cd ./crm && sh start.sh
 ```
 Далее в браузере открыть ссылку [crm](http://localhost:8080/index.html)
