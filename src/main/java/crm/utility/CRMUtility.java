@@ -9,13 +9,13 @@ import java.util.List;
 
 public class CRMUtility {
 
-    public static long getSalesReportDif(DBService dbService, String name, Date date) throws DBException {
+    public static double getSalesReportDif(DBService dbService, String name, Date date) throws DBException {
         List<TradeHistoryDataSet> purchase = dbService.getActivePurchaseReport(name, date);
         List<TradeHistoryDataSet> demand = dbService.getActiveDemandReport(name, date);
         int demandCount = demand.stream().map(el -> el.getNums()).reduce(0, (x, y) -> x + y);
         int i = 0;
         int j = 0;
-        long report = 0;
+        double report = 0;
 
         while (demandCount > 0) {
             TradeHistoryDataSet pur = purchase.get(i);

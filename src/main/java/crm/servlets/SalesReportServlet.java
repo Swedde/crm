@@ -67,7 +67,7 @@ public class SalesReportServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
-            long report = CRMUtility.getSalesReportDif(dbService, name, date);
+            double report = CRMUtility.getSalesReportDif(dbService, name, date);
             answer.addProperty(JSON_ANSW.SALES_REPORT.getTitle(), report);
             pw.println(answer.toString());
         } catch (DBException e) {

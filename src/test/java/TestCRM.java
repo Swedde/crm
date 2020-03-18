@@ -52,7 +52,7 @@ public class TestCRM {
 
     @Test
     public void testTotalDiff() throws Exception {
-        Assert.assertEquals(20, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577836800L)));
-        Assert.assertEquals(80, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577923200L)));
+        Assert.assertEquals(20, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577836800L)), 0.01);
+        Assert.assertEquals(80, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577923200L)), 0.01);
     }
 }
