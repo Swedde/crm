@@ -1,11 +1,13 @@
-import crm.beanfactory.BeanFactory;
+import crm.config.ApplicationConfigs;
 import crm.dbservice.bean.DBService;
-import crm.utility.CRMUtility;
+import crm.servlets.SalesReportServlet;
 import crm.utility.JSON_FIELDS;
 import crm.utility.Params;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Date;
 
@@ -14,7 +16,8 @@ public class TestCRM {
 
     @Before
     public void initialization() {
-        dbService = BeanFactory.getDBService("CRM");
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationConfigs.class);
+        dbService = ctx.getBean(DBService.class);
         dbService.addProduct("green");
         dbService.addProduct("white");
         dbService.purchaseProduct(new Params("green", 3, 10, new Date(1577836800L)));
@@ -52,7 +55,8 @@ public class TestCRM {
 
     @Test
     public void testTotalDiff() throws Exception {
-        Assert.assertEquals(20, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577836800L)), 0.01);
-        Assert.assertEquals(80, CRMUtility.getSalesReportDif(dbService, "green", new Date(1577923200L)), 0.01);
+        SalesReportServlet servlet = new SalesReportServlet(dbService);
+        Assert.assertEquals(20, servlet.getSalesReportDif(dbService, "green", new Date(1577836800L)), 0.01);
+        Assert.assertEquals(80, servlet.getSalesReportDif(dbService, "green", new Date(1577923200L)), 0.01);
     }
 }

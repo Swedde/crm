@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import crm.dbservice.exception.DBException;
 import crm.dbservice.bean.DBService;
 import crm.utility.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@Component
 public class NewProductServlet extends HttpServlet {
     private DBService dbService;
 
-    public NewProductServlet(DBService dbService) {
+    public NewProductServlet(@Autowired DBService dbService) {
         this.dbService = dbService;
     }
 

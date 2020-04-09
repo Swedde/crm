@@ -7,6 +7,8 @@ import crm.utility.JSON_ANSW;
 import crm.utility.JSON_ERR;
 import crm.utility.PARAMETRS_NAMES;
 import crm.utility.Params;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@Component
 public class DemandServlet extends HttpServlet {
     private DBService dbService;
 
-    public DemandServlet(DBService dbService) {
+    public DemandServlet(@Autowired DBService dbService) {
         this.dbService = dbService;
     }
 
